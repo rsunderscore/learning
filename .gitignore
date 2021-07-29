@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+#OTHER - zipped copies of example datafiles
+*.zip
+datasets/
+
 # C extensions
 *.so
 

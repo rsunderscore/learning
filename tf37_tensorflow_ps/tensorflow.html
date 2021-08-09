@@ -1,0 +1,349 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.6  (Win32)">
+	<META NAME="CREATED" CONTENT="20201123;18074587">
+	<META NAME="CHANGED" CONTENT="20201124;20592227">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { margin: 0.79in }
+		P { margin-bottom: 0.08in }
+		H1 { margin-bottom: 0.08in }
+		H1.western { font-family: "Arial", sans-serif; font-size: 16pt }
+		H1.cjk { font-family: "Microsoft YaHei"; font-size: 16pt }
+		H1.ctl { font-family: "Arial"; font-size: 16pt }
+		H2 { margin-bottom: 0.08in }
+		H2.western { font-family: "Arial", sans-serif; font-size: 14pt; font-style: italic }
+		H2.cjk { font-family: "Microsoft YaHei"; font-size: 14pt; font-style: italic }
+		H2.ctl { font-family: "Arial"; font-size: 14pt; font-style: italic }
+		PRE.cjk { font-family: "NSimSun", monospace }
+		A:link { so-language: zxx }
+		CODE.cjk { font-family: "NSimSun", monospace }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1 CLASS="western">Tensorflow pluralsight course notes</H1>
+<P STYLE="margin-bottom: 0in">Tsfx = tensorflow extensions</P>
+<P STYLE="margin-bottom: 0in">tensorflow light &ndash; used for
+lightweight applications (integrated/phones/IoT/etc)</P>
+<P STYLE="margin-bottom: 0in">tensorflow alternate languages: Python,
+C++, Javascript, and Swift(new)</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">C++ for embedding of speed</P>
+	<LI><P STYLE="margin-bottom: 0in">swift is supposed to be faster but
+	new and not fully supported?</P>
+</UL>
+<P STYLE="margin-bottom: 0in">Dense layer = every input connects to a
+layer output</P>
+<P STYLE="margin-bottom: 0in">google colaboratory:
+<A HREF="http://colab.research.google.com/">http://colab.research.google.com/</A>
+ (requires google account)</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">can use GPU/TPU</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">edit-&gt; notebook setings-&gt;
+		change hardware accelerator to GPU (nvidia) or TPU (google)</P>
+		<LI><P STYLE="margin-bottom: 0in">no guarantee that a GPU/TPU will
+		be available at runtime</P>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in">TPU = tensor processing unit (as
+	designed by google)</P>
+</UL>
+<P STYLE="margin-bottom: 0in"><IMG SRC="tensorflow_html_44b7c8a6.png" NAME="graphics2" ALIGN=LEFT WIDTH=628 HEIGHT=161 BORDER=0><BR CLEAR=LEFT><BR>
+</P>
+<P STYLE="margin-bottom: 0in">Weights &ndash; alternate name for
+coefficients</P>
+<P STYLE="margin-bottom: 0in"><IMG SRC="tensorflow_html_m52508a.png" NAME="graphics1" ALIGN=LEFT WIDTH=517 HEIGHT=216 BORDER=0><BR CLEAR=LEFT>mimicking
+linear regression</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">neuron weights are slope and
+	intercept</P>
+	<LI><P STYLE="margin-bottom: 0in">adjust the weights until
+	prediciton matches training 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">mini-batch gradient descent used
+	to work to minimization of loss function</P>
+	<LI><P STYLE="margin-bottom: 0in">Process</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">initialize weights</P>
+		<LI><P STYLE="margin-bottom: 0in">repeat until loss acceptable or
+		max epochs reached</P>
+		<UL>
+			<LI><P STYLE="margin-bottom: 0in">foreach mini-batch</P>
+			<UL>
+				<LI><P STYLE="margin-bottom: 0in">make predictions</P>
+				<LI><P STYLE="margin-bottom: 0in">compute loss function</P>
+				<LI><P STYLE="margin-bottom: 0in">compute gradient to minimize
+				loss</P>
+				<LI><P STYLE="margin-bottom: 0in">update m and b based on
+				gradient (using learning rate)</P>
+			</UL>
+			<LI><P STYLE="margin-bottom: 0in">next epoch</P>
+		</UL>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in">intercept is referred to as 'bias'
+	in certain cases</P>
+	<LI><P STYLE="margin-bottom: 0in">only requires a single neuron</P>
+</UL>
+<P STYLE="margin-bottom: 0in"><B>tensors</B> are data flowing through
+the model &ndash; n dimensional structure used to represent data</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">god for generalized mathematical
+	operations</P>
+</UL>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">properties</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">rank = # of dimensions (0: point;
+		1:vector; 2: matrix; 3: cube; 4+: n-tensor)</P>
+		<LI><P STYLE="margin-bottom: 0in">shape = # vectors and # values in
+		each vector (0:[], 1:[5], 2:[5,7], 3:[5,7,13]) &ndash; directly
+		related to rank</P>
+		<LI><P STYLE="margin-bottom: 0in">datatype: e.g. float32, float64,
+		in8/16/32/64, uint8/16(unsigned int), string, bool, complex64/128,
+		quant8/16 (quantized), quint8</P>
+		<UL>
+			<LI><P STYLE="margin-bottom: 0in">quantized &ndash; scaled to
+			reduce size for faster processing (75%) and possible reduced
+			accuracy</P>
+			<LI><P STYLE="margin-bottom: 0in"></P>
+		</UL>
+	</UL>
+</UL>
+<P STYLE="margin-bottom: 0in">keras is tensorflow's high-level API</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">tensorflow NN Steps</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">preprocessing (e.g. scale data)</P>
+	<LI><P STYLE="margin-bottom: 0in">create the model with activation
+	function, data shape, weight/kernel initializer, and bias
+	initializer</P>
+	<LI><P STYLE="margin-bottom: 0in">compile the model with loss
+	function and optimizer</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">can request a metric to use as
+		well e.g. metrics = ['accuracy']</P>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in">train_test_split 80/20 or 70/30</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">give random_state seed if you
+		want reproducability</P>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in">train: run model.fit(X, Y, epochs,
+	batch_size, verbose)</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">loss should go down with
+		subsequent epochs</P>
+		<LI><P STYLE="margin-bottom: 0in">test data can be passed to
+		evaluate progress over time 
+		</P>
+		<LI><P STYLE="margin-bottom: 0in">callback to tensorboard if using
+		it</P>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in">call model.predict on training
+	data to get predicted values</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">check accuracy</P>
+		<UL>
+			<LI><P STYLE="margin-bottom: 0in">visualize loss &ndash; check for
+			convergence (loss levels out)</P>
+			<LI><P STYLE="margin-bottom: 0in">add more data or do more
+			training?</P>
+		</UL>
+		<LI><P STYLE="margin-bottom: 0in">may need to apply inverse
+		transform to get data back to original scale</P>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in">evaluate model with test data</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">compare MSE from test vs train</P>
+	</UL>
+</UL>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<H1 CLASS="western">Section 6</H1>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">Neuron inputs from sensors or
+	other neurons</P>
+	<LI><P STYLE="margin-bottom: 0in">Neuron</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">1+ inputs &ndash; combined in
+		neuron</P>
+		<UL>
+			<LI><P STYLE="margin-bottom: 0in">trainable weights (for each
+			input)</P>
+			<LI><P STYLE="margin-bottom: 0in"><IMG SRC="tensorflow_html_m675b08d3.png" NAME="graphics3" ALIGN=LEFT WIDTH=440 HEIGHT=313 BORDER=0><BR CLEAR=LEFT></P>
+			<LI><P STYLE="margin-bottom: 0in">activation function applied to
+			(sum of inputs times weights) plus bias 
+			</P>
+			<UL>
+				<LI><P STYLE="margin-bottom: 0in">needed for non-linear modeling</P>
+				<LI><P STYLE="margin-bottom: 0in">prevents a single neuron from
+				growing too large</P>
+				<LI><P STYLE="margin-bottom: 0in">vanishing gradient &ndash;
+				small values fade to 0 &ndash; stops learning</P>
+				<LI><P STYLE="margin-bottom: 0in">Common ones</P>
+				<UL>
+					<LI><P STYLE="margin-bottom: 0in">Sigmoid &ndash; output values
+					0 to 1 &ndash; flat tails limit impact of large values &ndash;
+					vanishing gradient</P>
+					<LI><P STYLE="margin-bottom: 0in">Tanh (hyperbolic tangent) -1
+					to 1 &ndash; flatter tails &ndash; vanishing gradient</P>
+					<LI><P STYLE="margin-bottom: 0in">ReLU &ndash; rectified linear
+					unit: 0 to x range; equation = max(0,x) &ndash; everything &lt;
+					0 is zero, everything above is itself &ndash; con: lets through
+					large values (possible blowing up) widely used</P>
+					<LI><P STYLE="margin-bottom: 0in">Leaky ReLU &ndash; lets
+					through some negative but minimizes them</P>
+					<LI><P STYLE="margin-bottom: 0in">SoftMax &ndash;
+					(classification last layer &ndash; computes probability that the
+					input belongs to each of the classes) &ndash; probabilities must
+					add to 100%</P>
+				</UL>
+			</UL>
+		</UL>
+		<LI><P STYLE="margin-bottom: 0in">1 output &ndash; might get passed
+		as input for multiple downstream neurons</P>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in">hidden layers &ndash; catpure
+	relationships between the data</P>
+	<LI><P STYLE="margin-bottom: 0in"><B>forward propagation</B> &ndash;
+	passing values forward through the NN</P>
+	<LI><P STYLE="margin-bottom: 0in"><B>Loss</B> &ndash; measured
+	across multiple samples and classes</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">categorical cross entropy
+		(common) &ndash; calculates loss across multiople classes</P>
+		<LI><P STYLE="margin-bottom: 0in">hyperparameter that we need to
+		specify</P>
+		<LI><P STYLE="margin-bottom: 0in">works with <B>optimizer</B><SPAN STYLE="font-weight: normal">
+		(commonly mini-batch SGD)</SPAN></P>
+		<UL>
+			<LI><P STYLE="margin-bottom: 0in; font-weight: normal"><B>back
+			propagation of error </B>(backprop) &ndash; adjust weights and
+			biases to reduce loss</P>
+			<LI><P STYLE="margin-bottom: 0in; font-weight: normal">must be
+			compitible with loss function</P>
+			<LI><P STYLE="margin-bottom: 0in; font-weight: normal">GPU/TPU
+			helps with these SGD calculations</P>
+		</UL>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in; font-weight: normal">MNIST [hand
+	drawn numbers] issues &ndash; (modified national institue for
+	standards and technology)</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">too easy
+		(&gt;99% accuracy common)</P>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">overused</P>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">not
+		repersentative of modern problems</P>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">fashion
+		mnist &ndash; grayscale, 28x28, 70K rows</P>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in; font-weight: normal">sparse
+	categorical cross-entropy &ndash; loss function for classification</P>
+	<LI><P STYLE="margin-bottom: 0in; font-weight: normal">scaling data
+	can prevent overflows when running the model</P>
+	<LI><P STYLE="margin-bottom: 0in; font-weight: normal">Flatten layer
+	&ndash; transformation layer that convers 28x28 array to 1x784</P>
+	<LI><P STYLE="margin-bottom: 0in; font-weight: normal">input shape
+	is only needed for first layer &ndash; keras implicitly handles
+	shapes passed from prior layers</P>
+	<LI><P STYLE="margin-bottom: 0in; font-weight: normal">how many
+	neurons to use &ndash; keep it between the number of inputs and the
+	number of outputs (e.g. 784 inputs &gt;= 128 neurons &gt;= 10 output
+	classes)</P>
+	<LI><P STYLE="margin-bottom: 0in; font-weight: normal">use
+	model.summary to get a summary of NN layers 
+	</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">param # =  
+		inputs * weights * biases 
+		</P>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in; font-weight: normal">model.compile
+	does not take long &ndash; model.fit (training) takes the longest
+	time</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">put a %%
+		time magic on these cells</P>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in; font-weight: normal">adam
+	optimizer &ndash; variation fo mini-batch gradient descent</P>
+	<LI><P STYLE="margin-bottom: 0in; font-weight: normal">large diff
+	bewteen training score and testing score = model can be improved</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">model has
+		overfit (memorized the training data)</P>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in; font-weight: normal">tensorboard &ndash;
+	used to evaluate model performance</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">run from CLI
+		and specify log directory where data from run was stored</P>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">starts a
+		weeb server &ndash; default url: <A HREF="http://localhost:6006/">http://localhost:6006/</A>
+				</P>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">must be run
+		after model fit?</P>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">Sections</P>
+		<UL>
+			<LI><P STYLE="margin-bottom: 0in; font-weight: normal"><B>scalars</B>
+			&ndash; data collected from our model</P>
+			<LI><P STYLE="margin-bottom: 0in; font-weight: normal">graphs &ndash;
+			graphs for internal metrics from tensorflow</P>
+			<LI><P STYLE="margin-bottom: 0in; font-weight: normal">distributions
+			&ndash; value dists</P>
+			<LI><P STYLE="margin-bottom: 0in; font-weight: normal">more</P>
+		</UL>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">if graphs
+		look funny tensorboard is probably reusing an old PID that needs to
+		be killed</P>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal"><FONT COLOR="#800000">when
+		run from CLI &ndash; old files seem to be used even when
+		tensorboard is stopped and restarted</FONT></P>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in; font-weight: normal">overfitting
+	solutions</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">reduce
+		complexity &ndash; reduce neurons or layers</P>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">randomly
+		drop neuron output (set to 0) &ndash; regularize</P>
+		<UL>
+			<LI><P STYLE="margin-bottom: 0in; font-weight: normal">add a keras
+			dropout layer</P>
+		</UL>
+		<LI><P STYLE="margin-bottom: 0in; font-weight: normal">stop
+		training early (when loss increases again, or accuracy decreases)</P>
+	</UL>
+</UL>
+<H2 CLASS="western"><FONT COLOR="#800000">Strange file cleanup bug</FONT></H2>
+<UL>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in"><B>can't clean up logs directory
+		&ndash; no permission on certain files</B></P>
+		<LI><P STYLE="margin-bottom: 0in"><B>error varies access denied or
+		permission error</B></P>
+		<LI><P STYLE="margin-bottom: 0in"><B>windows says that all users do
+		not have read access (incl adminstrators)</B></P>
+		<UL>
+			<LI><PRE CLASS="western"><CODE CLASS="western"><SPAN STYLE="font-weight: normal">TAKEOWN /f %DIRECTORY_NAME% /r /d y</SPAN></CODE></PRE>
+			<UL>
+				<LI><P STYLE="margin-bottom: 0in"><CODE CLASS="western"><FONT COLOR="#800000"><FONT FACE="Times New Roman, serif"><B>fails</B></FONT></FONT></CODE></P>
+			</UL>
+			<LI><PRE CLASS="western"><CODE CLASS="western">ICACLS %DIRECTORY_NAME% /grant administrators:F /t</CODE></PRE>
+			<UL>
+				<LI><P STYLE="margin-bottom: 0in"><FONT COLOR="#800000"><B>fails</B></FONT></P>
+			</UL>
+		</UL>
+		<LI><P STYLE="margin-bottom: 0in"><B>files can be deleted only
+		after stopping the jupyter server &ndash; stopping/restarting the
+		kernel for the notebook does not help</B></P>
+	</UL>
+</UL>
+</BODY>
+</HTML>

@@ -1,4 +1,5 @@
-#Python Machin Learning by xxx and yyyy
+# Python Machin Learning by xxx and yyyy
+
 notes from the book 
 
 - convention - underscore after a attribute indicates that it is not created at init time (p 39)
@@ -128,6 +129,39 @@ lazy learning - memorizes the training data rather than learning a discriminant 
       - exhaustive search algorithms - check all possible combinations - more computation - more accurate
     - recursive backward elimination - 
     - tree based methods - feature_importances_ attribute after fitting RandomForestClassifier
+  - if 2 features are highly correlated one may be ranked highly while the other is not fully captured
+  - sklearn SelectFromModel selects features based on a user threshold (e.g. given a RandomForest and a threshold it will return features)
+
+## Dimensionality reduction
+- PCA - principal component analysis - unsupervised method - orthogonal vectors of maximum variance for a desired feature count
+  - highly sensitive to data scaling
+  - eigenvalues and eigenvectors based on covariance matrix of principal comopnents
+    - np.linalg.eig (eigh avoids complex results that may come up with eig)
+    - eigenvectors are typically scaled to unit length
+  - total vs explained variance - bar chart of variance explained for each component and a cumsum total plotted as a line
+  - signs for eigenvector matrix may be flipped depending on the LAPACK implementation on current system (does not effect the model) - mutliply by -1 to fix
+  - sklearn.decompisition.PCA
+    - setting n_components_ = None will return all components in sorted order instead of doing the dimensionality reduction
+- LDA - Linear Discriminant analysis - supervised - find feature subspace the optimizes class seperability
+  - assumes normally distributed data and that classes have identical covariance matrices
+  - class labels taken into account in the form of mean vectors -computed for each class used for within-class and between-class scatter matrices
+  - computing scatter matrix is the same as computing covariance matrix  (covariance matrix is normalized version)
+  - instead of performing eigen decompoisition on the covariance matrix the eigenvalue problem is solved directly
+- KPCA - kernel PCA
+  -  use kernel function to map data into higher dimensional space that is linearly seperable - computationally expensive
+  - results are projected onto the feature space directly without a transformation matrix
+  - need to center the kernel matrix to guarantee that the feature space is centered at zero
+  - most comon kernels
+    - polynomial kernel
+    - readial basis function (RBF) == Gaussian (see above)
+  - not implemented in sklearn :question:
+    - book solution uses scipy.spatial.distance.pdist and squareform; sciopy.exp; and scipy.linalg.eigh
+  - must experiment to find the right value of gamma \gamma
+  - creating datasets for testing
+    - sklearn.datasets.make_moons
+    - sklearn.datasets.make_circles
+    - hyperbolic tangent == sigmoid kernel
+
 
 ## other ensemble methods (Ch 7)
 - bagging - 

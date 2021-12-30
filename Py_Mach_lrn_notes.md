@@ -1,0 +1,48 @@
+#Python Machin Learning by xxx and yyyy
+notes from the book 
+
+- convention - underscore after a attribute indicates that it is not created at init time (p 39)
+- normalization procedcure helps gradient descent learning to covnergae more quickly (p 50)
+- standardization helps with gradient descent learning b/c optimizer has to go through fewer steps (p 51)
+- SSE may be non-zero even though all examples are classified - i.e. the model may report some amount of error even with 100% classification (p 51)
+- stochastic part of SGD == weights are updated incrementally with each training example (p 52)
+- error surface is noisier than in gradient descent
+- shuffle the training dataset for every epoch
+- adaptive learning rate with SGD rather than fixed learning rate
+- online learning == model is trained on the fly as new data arrives
+- partial_fit - method which does not reinitialize the weights for online learning
+- train_test_split automatically shuffles the data
+- startification - training and test subsets containing the same proportions of class labels (supervised)
+- plot_decision_regions (algorithm by book authors on p60
+- np.ravel (flatten a iter of iters) (p 54)
+- logistic regression: easy to implement and performs well on linearly separable classes
+  - logit function == logarithm of odds
+  - log is used to refer to ln (natural log) thorughout the book :question:
+  - uppercase pi symobl is like summation but multiplies over the specified range
+  - log reduces the potential for numerical underflow - which can happen if the likelihoods are small
+  - sklearn.linear_model.logisticRegression
+  - solver paramter allows for different optimization algorithms: newton-cg, lbfgs(default in sklearn 0.22), lib-linear (default in sklearn < 0.22), sag, saga
+  - np.argmax to get the largest column in each row - use for the labels
+  - for predict sklearn expects a 2d matrix so must convert single row for input using reshape(1,-1)
+  - goal is to maximize the conditional likelihoods which may increase outlier impact
+- bias variance trade-off
+  - high bias == underfitting == error (distance of predictions from actuals) - model is too simple to capture the underlying patterns
+  - high variance == overfitting == consistency - works well on train but not on test
+    - too many parameters?
+  - regularization penalizes extreme paramater weights (lowers bias)
+    - L1 regularization - (y2-y1) + (x2-x1)
+    - L2 regularization == shrinkage == weight decay - distance formula - sqrt((y2-y1)^2+(x2-x1)^2)
+    - requires all features to have comparable scale
+    - lambda is regularization parameter sometimes specified as its inverse 'C'
+- SVM = support vector machine
+  - maximize the margin - the distance the decision boundary and data points
+  - support vectors are the data points that are closest to the hyperplane boundary (they drive its location)
+  - small margins can indicate overfitting
+  - quadratic programming - what is this :question:
+  - slack variable \gamma lowercase gamma -used for soft-margin classification - handles cases when data is not perfectly linearly separable
+    - set C to control misclassification penalty
+  - less prone to outliers than logistic regression
+  - liblinear/libsvm == optimized library for solving logistic/SVM problems - work well if all data fits in memory - otherwise use SGDClassifer implementations
+- kernel SVM = for nonlinear problems
+  - kernel trick - protect the data into a higher dimensional space where it will be linearly separable
+  - uses a mapping function represented by \phi lowercase phi

@@ -15,7 +15,7 @@ notes from the book
 - startification - training and test subsets containing the same proportions of class labels (supervised)
 - plot_decision_regions (algorithm by book authors on p60
 - np.ravel (flatten a iter of iters) (p 54)
-- logistic regression: easy to implement and performs well on linearly separable classes
+## logistic regression: easy to implement and performs well on linearly separable classes
   - logit function == logarithm of odds
   - log is used to refer to ln (natural log) thorughout the book :question:
   - uppercase pi symobl is like summation but multiplies over the specified range
@@ -34,7 +34,8 @@ notes from the book
     - L2 regularization == shrinkage == weight decay - distance formula - sqrt((y2-y1)^2+(x2-x1)^2)
     - requires all features to have comparable scale
     - lambda is regularization parameter sometimes specified as its inverse 'C'
-- SVM = support vector machine
+
+## SVM = support vector machine
   - maximize the margin - the distance the decision boundary and data points
   - support vectors are the data points that are closest to the hyperplane boundary (they drive its location)
   - small margins can indicate overfitting
@@ -49,11 +50,35 @@ notes from the book
   - uses a mapping function represented by \phi lowercase phi
   - RBF (radial bias function) == Gaussian kernel - a widely used kernel 
   - cut-off paramater \gamma lowercase gamma - for gaussian sphere - higher menas bumpier decision boundary to better capture training but may lead to overfitting
-- Decision Trees - explainable - help with dim reduction - no need to regularize inputs
-  - split based on the largest information gain
-  - prune == set maximum depth of the tree
-  - binary trees - to reduce the decision search space
-  - impurity measures - usually pruning cutoffs are more helpful
-    - gini impurity - minimize the probability of missclassification
-    - entropy - maximize mutual information ()
-    - classification error - useful for pruning only
+
+## Decision Trees - 
+explainable - help with dim reduction - no need to regularize inputs
+- split based on the largest information gain
+- prune == set maximum depth of the tree
+- binary trees - to reduce the decision search space
+- information gain - reduction in entropy from transforming a dataset - compare entropy before/after the change
+  - mutual information - statistical dependence between two variables - name for information gain applied to a variable selection
+- impurity measures - usually pruning cutoffs are more helpful (gini is usually roughly equivalent to entropy (scaled?))
+  - gini impurity - minimize the probability of missclassification - usually falls between entropy and classification error
+  - entropy - maximize mutual information ()
+  - classification error - useful for pruning only (not growing) - less sensitive 
+  - visualize with `sklearn.tree.plot_tree(model_name)`
+  - graphviz has prettier tree visualizations but has many dependencies: better layout, colors 
+    - outfile=None to bypass disk and save data to a variable instead
+  - PydDotPlus - similar to graphviz and can convert \*.dot files to an image
+  - graphviz has useful visualizations for decision trees
+
+
+## Random forest
+large number of small trees, based on random samples from input data
+- random sample of data (with replacement)
+- random subset of features chosen (without replacement) for each tree
+- less interpretable than decision trees but less dependent on hyperparamter tuning
+- bias variance tradeoff is controlled by the sample size
+- d = number of features to consider at  each split = good starting point is sqrt(m) where m is the number of features in the training dataset
+- 
+
+
+## other ensemble methods (Ch 7)
+- bagging - 
+- boosting - 

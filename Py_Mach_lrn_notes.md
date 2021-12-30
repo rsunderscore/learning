@@ -15,6 +15,7 @@ notes from the book
 - startification - training and test subsets containing the same proportions of class labels (supervised)
 - plot_decision_regions (algorithm by book authors on p60
 - np.ravel (flatten a iter of iters) (p 54)
+- OvR = One vs Rest - 
 - **all allgorithms require informitive and discrimative features to yield useful predictions**
 
 ## logistic regression: easy to implement and performs well on linearly separable classes
@@ -110,12 +111,23 @@ lazy learning - memorizes the training data rather than learning a discriminant 
   - stratify (see above)
   - common ratios train:test - 60/40 or 70/30 for small datasets - for large datasets it is common to have 90:10 or 99:1
   - common to re-train on whole dataset prior to deployment
-- feature scaling
+- **feature scaling**
   - normalization - rescale features to range 0-1 (special case of min-max scaling) - sklearn.preprocesing.MinMaxScaler
   - standardization - alter the values to have unit variance and 0 mean - (subtract mean and divide by stddev) |x| might be larger than 1 - sklearn.preprocessing.StandardScaler
   - Robust scaling - scaled data according the 1st and 3rd quartiles (i.e. IQR) - sklearn.preprocessing.RobustScaler - recommended for small datasets with many outliers
-- Feature selection
-  - p
+- **Feature selection**
+  - impose a penalty for models with large numbers of features
+  - logistic reg with L1 regularization inherently causes weights to go to zero for less signficiant features - minimize model cost function and complexity penalty together
+    - lbfgs does not support L1-regularized
+    - get feature weights from lr.coef_
+  - logistic reg with L2 regularization also causes reduction in weights but not as sparse
+    - C is the inverse of the regularization parameter \lambda lambda
+  - sequential feature selection
+    - sequential backward selection - not implemented in sklearn but reasonably easy to code from scratch
+      - Greedy algorithms - locally optimal selections at each stage
+      - exhaustive search algorithms - check all possible combinations - more computation - more accurate
+    - recursive backward elimination - 
+    - tree based methods - 
 
 ## other ensemble methods (Ch 7)
 - bagging - 

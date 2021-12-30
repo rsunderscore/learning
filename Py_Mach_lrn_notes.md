@@ -15,6 +15,8 @@ notes from the book
 - startification - training and test subsets containing the same proportions of class labels (supervised)
 - plot_decision_regions (algorithm by book authors on p60
 - np.ravel (flatten a iter of iters) (p 54)
+- **all allgorithms require informitive and discrimative features to yield useful predictions**
+
 ## logistic regression: easy to implement and performs well on linearly separable classes
   - logit function == logarithm of odds
   - log is used to refer to ln (natural log) thorughout the book :question:
@@ -78,6 +80,15 @@ large number of small trees, based on random samples from input data
 - d = number of features to consider at  each split = good starting point is sqrt(m) where m is the number of features in the training dataset
 - 
 
+##K-neaest neighbors
+lazy learning - memorizes the training data rather than learning a discriminant function - very susceptible to overfitting
+- parametrics models = estimate parameters from training data, can discard training data e.g. peceptron, logistic regression, SVM
+- non-parametric models = number of parameters grows with training data, training data retained e.g. decision tree, kernel SVM
+  -  instance based learning - subset of non-parametric - memorize training data (lazy)
+-  for each new datapoint assign the new class by finding the k nearest points and the majority class is chosen for the new point
+-  immediately adapts as new data is collected
+-  right choice for _k_ is crucial for bias variance trade-off
+-  
 
 ## other ensemble methods (Ch 7)
 - bagging - 

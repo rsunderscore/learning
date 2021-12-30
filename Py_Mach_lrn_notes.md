@@ -127,7 +127,7 @@ lazy learning - memorizes the training data rather than learning a discriminant 
       - Greedy algorithms - locally optimal selections at each stage
       - exhaustive search algorithms - check all possible combinations - more computation - more accurate
     - recursive backward elimination - 
-    - tree based methods - 
+    - tree based methods - feature_importances_ attribute after fitting RandomForestClassifier
 
 ## other ensemble methods (Ch 7)
 - bagging - 

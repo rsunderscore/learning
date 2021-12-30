@@ -45,4 +45,15 @@ notes from the book
   - liblinear/libsvm == optimized library for solving logistic/SVM problems - work well if all data fits in memory - otherwise use SGDClassifer implementations
 - kernel SVM = for nonlinear problems
   - kernel trick - protect the data into a higher dimensional space where it will be linearly separable
+  - kernel is a  similarity function between a pair of examples
   - uses a mapping function represented by \phi lowercase phi
+  - RBF (radial bias function) == Gaussian kernel - a widely used kernel 
+  - cut-off paramater \gamma lowercase gamma - for gaussian sphere - higher menas bumpier decision boundary to better capture training but may lead to overfitting
+- Decision Trees - explainable - help with dim reduction - no need to regularize inputs
+  - split based on the largest information gain
+  - prune == set maximum depth of the tree
+  - binary trees - to reduce the decision search space
+  - impurity measures - usually pruning cutoffs are more helpful
+    - gini impurity - minimize the probability of missclassification
+    - entropy - maximize mutual information ()
+    - classification error - useful for pruning only

@@ -80,7 +80,7 @@ large number of small trees, based on random samples from input data
 - d = number of features to consider at  each split = good starting point is sqrt(m) where m is the number of features in the training dataset
 - 
 
-##K-neaest neighbors
+## K-neaest neighbors
 lazy learning - memorizes the training data rather than learning a discriminant function - very susceptible to overfitting
 - parametrics models = estimate parameters from training data, can discard training data e.g. peceptron, logistic regression, SVM
 - non-parametric models = number of parameters grows with training data, training data retained e.g. decision tree, kernel SVM
@@ -89,6 +89,33 @@ lazy learning - memorizes the training data rather than learning a discriminant 
 -  immediately adapts as new data is collected
 -  right choice for _k_ is crucial for bias variance trade-off
 -  
+
+## data preprocessing
+- find missing - fill(fillna) or remove(dropna) or Impute
+  - sklearn.impute.SimpleImputer - mean imputation - mean of entire column - 
+    - transformer class (fit and transform methods): run fit on train X data features (no y targets) - run transform on both train and test features (and prod)
+- numpy vs pandas - sklearn has some support for DataFrames
+  - sklearn support for np arrays is more mature - use when possible
+- categorical data
+  - ordinal - inherent order to the labels (e.g. Small Medium Large) - assign numbers based on index or mapping dictionary
+    - sklearn.preprocessing.LabelEncoder later can use inverese_transform method to get labels back
+  - nominal - no inherent order (e.g. red, blue, green) - require encoding
+    - create columns from the values and code with 0/1
+    - 1 column is typically removed as it is inherent from other selections and can cause multi-collinearity of the features
+      - multi-collinearity causes matrices to be computationally difficult to invert
+    - one-hot encoding - new dummy feature for each unique value in the nominal column 
+      - sklearn.preprocessing.One-HotEncoder or sklearn.compose.ColumnTranformer to process mutliple columns at once
+      - or pandas get_dummies method - drop_first = True to drop one of the categories
+- splitting data - sklearn.model_selection.train_test_split()
+  - stratify (see above)
+  - common ratios train:test - 60/40 or 70/30 for small datasets - for large datasets it is common to have 90:10 or 99:1
+  - common to re-train on whole dataset prior to deployment
+- feature scaling
+  - normalization - rescale features to range 0-1 (special case of min-max scaling) - sklearn.preprocesing.MinMaxScaler
+  - standardization - alter the values to have unit variance and 0 mean - (subtract mean and divide by stddev) |x| might be larger than 1 - sklearn.preprocessing.StandardScaler
+  - Robust scaling - scaled data according the 1st and 3rd quartiles (i.e. IQR) - sklearn.preprocessing.RobustScaler - recommended for small datasets with many outliers
+- Feature selection
+  - p
 
 ## other ensemble methods (Ch 7)
 - bagging - 

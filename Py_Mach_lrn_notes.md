@@ -161,20 +161,23 @@ lazy learning - memorizes the training data rather than learning a discriminant 
     - sklearn.datasets.make_moons
     - sklearn.datasets.make_circles
     - hyperbolic tangent == sigmoid kernel
+  - from sklearn.dcomposition import KernelPCA (pg 133)\
+  
+# Model evaluation - fine tuning models and evalutating performance (pg 134)
+- Pipeline class 'fit a model including an abitrary number of transformation steps ... and make predictions' (pg 134)
+  - make_pipeline - supplied with arbitrary list of transformers (support fit/transmform methods) followed by an estimator that (implements fit/predict) (pg 136)
+  - calling fit on the pipeline calls all the transformers followed by the fit method for estimator
+  - calling predict on pipeline performs the same transformations but final step is predict method of estimator (pg 136)
+  - no limit to # of intermediate steps
+- using same test dataset repeatedly essentially makes it part of the model and leads to overfitting
+  - solutions - goal obtain a lessbiased estimate of ability to generalize to new data
+    - hold-out cross=validation - separate data into 3 parts train/validate/test - performance on validation data is used for model selection (pg 137)
+      - con: perfomrance estimate may be ssensitive to how data is partitioned - estimate will vary for different data examples
+    - k-fold cross-validation
+- use validation dataset for model selection
 
 # notes exported from ebook app
 
-- "KPCA class in the sklearn.decomposition"  (pg 133)
-- "Pipeline class in scikit-learn"  (pg 134)
-- "fine-tuning the algorithms and evaluating the performance"  (pg 134)
-- "we feed a dataset to the predict call of a Pipeline object instance, the data will pass through the intermediate steps via transform calls. In the final step, the estimator object will then return a prediction on the transformed data"  (pg 136)
-- "no limit to the number of intermediate steps in a pipeline; however, the last pipeline element has to be an estimator"  (pg 136)
-- "If we call the fit method of Pipeline, the data will be passed down a series of transformers via fit and transform calls on these intermediate steps until it arrives at the estimator object"  (pg 136)
-- "make_pipeline function takes an arbitrary number of scikit-learn transformers (objects that support the fit and transform methods as input"  (pg 136)
-- "performance on the validation dataset is then used for the model selection."  (pg 137)
-- "separate the data into three parts:"  (pg 137)
-- "if we reuse the same test dataset over and over again during model selection, it will become part of our training data and thus the model will be more likely to overfit"  (pg 137)
-- "holdout cross-validation and k-fold cross-validation"  (pg 137)
 - "k-fold cross-validation"  (pg 137)
 - "average performance of the models based on the different, independent test folds"  (pg 138)
 - "Typically, we use k-fold cross-validation for model tuning, that is, finding the optimal hyperparameter values"  (pg 138)

@@ -1,4 +1,6 @@
-# Python Machin Learning by xxx and yyyy
+# Python Machine Learning by Sebastian 
+by Raschka and Vahid Mirjalili 
+2019 Packt
 
 notes from the book 
 

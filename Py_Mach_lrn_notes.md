@@ -298,17 +298,52 @@ lazy learning - memorizes the training data rather than learning a discriminant 
 
 ## sentiment analysis (p 178)
 also called 'opinion mining
+- bag of words - based on word counts in each document from CountVectorizer
+  - sklearn.feature_extraction.text import CountVectorizer
+    - vacabulary_ attribute has all the words and their indices (usually assigned alphabetically)
+    - also called term frequencies
+  - n-grams - grab words together to capture context
+    - e.g. n-grams of size 3-4 give good perfomance in SPAM filters
+    - CountVectorizer has ngram_range parameter to handle
+- tf-idf - term frequency inverse document frequency 
+  - zero in denominator of calc so that words that are not in any document get a non-zero value (avoid division by zero?)
+  - skelarn.feature_extraction.text import TfidfTransformer (takes CountVectorizer as input)
+    - different computation than textbook - (adds 1 to numerator also) due to smooth_idf=True
+    - class normalizes tfidfs directly using L2-normalization
+  - TfidfVectorizer combbines CountVectorizer with TfidfTransformer (p 189)
+- cleaning
+  - strip unwanted characters e.g. punctuation
+  - using regex to parse HTML is generally not advised
+  - tokenize usnign str.split or NLTK
+    - porter tokenizer
+  - stemming
+    - lemmatization - more computationally difficult - tries to stem to real dictionary word
+    - porter stemmer - oldest/simplest 
+    - lancaster stemmer - notorious for being more aggressive than porter
+    - snowball stemmer (aka Porter2 or English) faster than porter 
+    - "stemming and lemmatization have little impact on the performance of text classification"  (pg 187)- 
+- Logistic regression of tfidf
+  - recommended to use n_jobs to speed up grid search (specifically with regard to tokenization)
+- Naive Bayes (not covered)
+  - good for small datasets
 
+- "**out-of-core learning** which allows us to work with such large datasets by fitting the classifier incrementally on smaller batches of a dataset.Text"  (pg 191)
+  - requires models with a partical_fit function (e.g. SGDClassifier)
+  - right a function to load batches of data from files on disk (e.g. stream_docs function p 191)
+  - use HashingVectorizer to avoid storing all words in memory - uses Hashing trick via 32 bit MurmurHash3 function (Austin Appleby)
+    - choose a large number for  n_features param to avoid collisions
+-word2vec - unsupervised - uses neural network - put words that have similar meanings into similar clusters
+  - allows performaing math with words e.g. king - man + woman = queen
+
+## topic modeling
+---
 ## out of place notes and errata
 *** NOTE that mlxtend has a plot_decision_regions function already defined that works like the one in this book ***
 - "get_params method to get a basic idea of how we can access the individual parameters inside a GridSearchCV"  (pg 166) **move this up**
 - "bad practice to use the test dataset more than once for model evaluation"  (pg 168) **move this up**
+- python package pyprind is useful for putting progress bars on various parts of model training (p 179)
 ---
 
-
-- "stemming and lemmatization have little impact on the performance of text classification"  (pg 187)
-- "lemmatization is computationally more difficult and expensive compared to stemming and"  (pg 187)
-- "of-core learning, which allows us to work with such large datasets by fitting the classifier incrementally on smaller batches of a dataset.Text"  (pg 191)
 - "Latent Dirichlet Allocation (LDA). However, note that while Latent Dirichlet Allocation is often abbreviated as LDA, it is not to be confused with linear discriminant analysis,"  (pg 194)
 - "regression using the RANdom SAmple Consensus (RANSAC) algorithm, which fits a regression model to a subset of the data, the so-called inliers"  (pg 228)
 - "Ridge Regression, least absolute shrinkage and selection operator (LASSO), and elastic Net"  (pg 232)

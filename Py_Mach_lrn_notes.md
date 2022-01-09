@@ -185,70 +185,79 @@ lazy learning - memorizes the training data rather than learning a discriminant 
     -  leave one out cross validation (LOOCV) - set k to number of training samples (one training example per fold - recommended for small datasets (p 139)
     -  k-fold cross-validation scorer - sklearn.model_selection import cross_val_score - simplifies model evaluation (p 140)
       - use n_jobs param to use multiple CPUs
-    - other methods: .643 bootstrap, 
+    - other methods: .643 bootstrap (p 141)
 - use validation dataset for model selection
 
 ## learning curves and validation curves (p 141)
+![image](https://user-images.githubusercontent.com/51385580/148666088-f6d48866-6383-41a0-90a1-baeea5fb9423.png)
   - common fixes
     - underfitting
       - increase parameters to the model
       - decrease degree of regularization (e.g. in SVM or logistic reg classifiers)
     - overfitting
-     - collect more data
-     - reduce model complexity
-     - increase regularization
-     - decrease features with feature selection
+      - collect more data
+      - reduce model complexity
+      - increase regularization
+      - decrease features with feature selection
+    - learning curve - uses stratified k-fold cross-validation to calculate the cross-validation accuracy of a classifier -  - `sklearn.model_selection import learning_curve`
+      - cv param sets the number of folds (p 143)
+      - ![image](https://user-images.githubusercontent.com/51385580/148666103-880070be-3d70-4695-9b8d-9e22264f1c7c.png)
+      - pass a model or pipeline to the function to use for the validation
+      - access parameters within the pipeline by referencing the name returend by model.get_params (need to check this) e.g. `logisticregression__C'
+      - plot accuracy vs # training examples
+    - validation curve  - uses stratified k-fold cross-validation by default to estimate the performance - `sklearn.model_selection import validation_curve` - (p 144) 
+      -  plot of accuracy vs regularization parameter (C)
+      -  ![image](https://user-images.githubusercontent.com/51385580/148666113-16e33148-d35d-4bbd-9ab0-f92a9d13f6c1.png)
+
+## hyper-parameter tuning
+- Grid Search - helps to improve performance by finding the optimal combination of hyperparamaters (p 145)
+  - from sklearn.model_selection import GridSearchCV
+    - pass a param_grid: list of dicts with param names and potential values to search (or single value to use)
+    - "best_score_ attribute provides the accuracy score achieved (pg 146)
+    -  best_params_ attribute provides the params used to attain the best score
+    -  best_estimator_ among models which one had the best accuracy (using independent test datset)
+    -  uses burte-force exhaustive search
+    -  refit param - automatically refit whole training set to the best_estimator with best_params
+-  Randomized search - usuall performs almost as well but is much more cost and time effective (p 146)
+  -  RandomizedSearchCV
+-  nested cross-validation - select among different machine learning algorithms ( p 147)
+  -  outer k-fold cross-validation loop to split the data into training and test folds 
+  -  inner loop is used to select the model using k-fold cross-validation on the training fold 
+  -  5x2 for large datasets it is usueful to set CV=5 for outer loop and 2 for inner loop
+  -  ![image](https://user-images.githubusercontent.com/51385580/148666513-e7558e5a-ceb5-47e4-a2bc-08d74dc1e7eb.png)
+  -  cross_val_score function (where does this come from?)
+-  other metrics for model perfomance - all in sklearn.metrics -  precision, recall, and the F1 score (p 148)
+  - calculated from confusion matrix - sklearn.metrics import confusion_matrix (p148)
+    -  visualize with matplotlibs mathshow
+    -  predicted across top actuals vertical on the side row major labels are: TP, FN, FP, TN
+    - "error can be understood as the sum of all false predictions divided by the number of total predictions, and the accuracy is calculated as the sum of correct predictions divided by the total number of predictions,"  (p 149) (FP+FN) / (FP+FN+TP+TN)
+    - accuracy = (TP+TN)/(FP+FN+TP+TN) = 1-error
+    - recall = TPR = TP/P = TP/(FN+TP) (p 149) minimizes the chance of missing something (FP are ok) (sklearn.metrics.recall_score)
+    - useful for imbalanced class problems
+      - FPR (false positive rate)= FP/N = FP/(FP+TN)
+      - TPR (true positive rate) =  (same thing as recall) 
+    - precision - emphasizes correctness i.e. minimizes the change of false positives = TP/(TP+FP (sklearn.metrics.precision_score)
+    - F1 score - combines precision and recall  = 2* (PRExREC)/(PRE+REC) (sklearn.metrics.f1_score)
+    - use one of these in GridSearchCV by passing to the `scoring` param
+      - construct custom with skelarn.metrics.make_scorer (e.g. scorer = make_scorer(f1_score)
+  - ROC (receiver operating characteristic) compares FPR and TPR to determine model performance - (p 150)
+    - chart diagonal represents random guess performance
+    - AUC (area under curve) is a numeric value for ROC curve to compare performance
+      - interpolated teh average ROC curve from the multiple fuolds using scipy interp function (p 152)
+      - obtain directly using `sklearn.metrics.roc_auc_score`
+      - precision-recall curves - different probability thresholds
+- multi-class classification scoring
+  - "scikit-learn also implements macro and micro averaging methods to extend those scoring metrics to multiclass problems via one-vs.-all (OvA)"  (pg 152)
+  - macro-averaging(default) - average of scores for different systems - sum of all precision metrics divided by the number of systems - useful if there might be a class imbalance
+  - micro-averaging  - sum of TP for all systems divided by the sum all TP + sum of all FP for all systems - useful if you want to weight each instance/prediction equally (instance weight more than class weight)
+  - specified to am make_socrer using the 'average' param
+  - class imbalance - can get high accuracy just by pridcition the majority class - so accuracy based models are not adding value
+*** NOTE that mlxtend has a plot_decision_regions function already defined that works like the one in this book ***
 
 # notes exported from ebook app
 
-
-- "collect more training examples to reduce the degree of overfitting"  (pg 141)
-- "setting n_jobs=2, we could distribute the 10 rounds of cross-validation to two CPUs"  (pg 141)
-- "alternative cross-validation techniques, such as the .632 Bootstrap cross-validation method"  (pg 141)
-- "underfits the training data. Common ways to address this issue are to increase the number of parameters of the model, for example, by collecting or constructing additional features, or by decreasing the degree of regularization, for example, in support vector machine (SVM) or logistic regression classifiers"  (pg 142)
-- "problem of overfitting, we can collect more training data, reduce the complexity of the model, or increase the regularization parameter, for example"  (pg 142)
-- "decrease the number of features via feature selection"  (pg 142)
-- "learning curve function from scikit-learn to evaluate the model"  (pg 142)
-- "from sklearn.model_selection import learning_curve"  (pg 142)
-- "default, the learning_curve function uses stratified k-fold cross-validation to calculate the cross-validation accuracy of a classifier, and we set k=10 via the cv parameter for 10-fold stratified cross-validation"  (pg 143)
-- "from sklearn.model_selection import validation_curve"  (pg 144)
-- "validation_curve function uses stratified k-fold cross-validation by default to estimate the performance"  (pg 144)
-- "we wrote as 'logisticregression__C' to access the LogisticRegression object inside the scikit-learn pipeline"  (pg 144)
-- "grid search, which can further help to improve the performance of a model by finding the optimal combination of hyperparameter values"  (pg 145)
-- "brute-force exhaustive search"; *grid search*  (pg 145)
-- "-selected model, which is available via the best_estimator_"; *for use with test data*  (pg 146)
-- "RandomizedSearchCV class in scikit-"  (pg 146)
-- "Randomized search usually performs about as well as grid search but is much more cost- and time-effective"  (pg 146)
-- "GridSearchCV class has a refit parameter, which will refit the gs.best_estimator_ to the whole training set automatically"  (pg 146)
-- "best_score_ attribute and looked at its parameters, which can be accessed via the best_params_"  (pg 146)
-- "param_grid parameter of GridSearchCV to a list of dictionaries to specify the parameters that we'd want to tune. For the linear SVM"  (pg 146)
-- "outer k-fold cross-validation loop to split the data into training and test folds, and an inner loop is used to select the model using k-fold cross-validation on the training fold"  (pg 147)
-- ""; *inner loop CV=2*  (pg 147)
-- "cross_val_score"; *outer loop CV=5*  (pg 147)
-- "If we want to select among different machine learning algorithms, though, another recommended approach is nested cross-validation"  (pg 147)
-- "nested cross-validation with only five outer and two inner folds, which can be useful for large datasets where computational performance is important; this particular type of nested cross-validation is also known as 5x2 cross-validation:￼"  (pg 147)
-- "Matplotlib's matshow"  (pg 148)
-- "other performance metrics that can be used to measure a model's relevance, such as precision, recall, and the F1 score."  (pg 148)
-- "scikit-learn provides a convenient confusion_matrix"  (pg 148)
-- "optimizing for recall helps with minimizing the chance of not detecting a malignant tumor."  (pg 149)
-- "precision (PRE) and recall (REC) are related to those TP and TN rates, and in fact, REC is synonymous with TPR:"  (pg 149)
-- "positive rate (TPR) and false positive rate (FPR) are performance metrics that are especially useful for imbalanced class problems"  (pg 149)
-- "combination of PRE and REC is used, the so-called F1 score:￼"  (pg 149)
-- "precision, on the other hand, we emphasize correctness"  (pg 149)
-- "error can be understood as the sum of all false predictions divided by the number of total predictions, and the accuracy is calculated as the sum of correct predictions divided by the total number of predictions,"  (pg 149)
-- "use a different scoring metric than accuracy in the GridSearchCV"  (pg 150)
-- "construct our own scorer via the make_scorer function"  (pg 150)
-- "Receiver operating characteristic (ROC) graphs are useful tools to select models for classification based on their performance with respect to the FPR and TPR"  (pg 150)
-- "precision-recall curves for different probability thresholds"  (pg 150)
-- "diagonal of a ROC graph can be interpreted as random guessing"  (pg 150)
-- "Micro-averaging is useful if we want to weight each instance or prediction equally"; *instance weight more than class weight?*  (pg 152)
-- "macro-average is used by default"  (pg 152)
-- "roc_auc_score function from the sklearn.metrics"  (pg 152)
-- "scikit-learn also implements macro and micro averaging methods to extend those scoring metrics to multiclass problems via one-vs.-all (OvA)"  (pg 152)
-- "interp function that we imported from SciPy"  (pg 152)
-- "-average is useful if we are dealing with class imbalances, that is, different numbers of instances for each label"  (pg 153)
 - "when we fit classifiers on such datasets, it would make sense to focus on other metrics than accuracy"; *can get 90% accuracy just by predicting majority class; models below that accuracy are not adding anything*  (pg 153)
-- "can specify the averaging method via the average"  (pg 153)
+ 
 - "assign a larger penalty to wrong predictions on the minority class."  (pg 154)
 - "sklearn.utils import resample"  (pg 154)
 - "resample function that can help with the upsampling of the minority class by drawing new samples from the dataset with replacement."  (pg 154)

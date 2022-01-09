@@ -163,7 +163,7 @@ lazy learning - memorizes the training data rather than learning a discriminant 
     - hyperbolic tangent == sigmoid kernel
   - from sklearn.dcomposition import KernelPCA (pg 133)\
   
-# Model evaluation - fine tuning models and evalutating performance (pg 134)
+## Model evaluation - fine tuning models and evalutating performance (pg 134)
 - Pipeline class 'fit a model including an abitrary number of transformation steps ... and make predictions' (pg 134)
   - make_pipeline - supplied with arbitrary list of transformers (support fit/transmform methods) followed by an estimator that (implements fit/predict) (pg 136)
   - calling fit on the pipeline calls all the transformers followed by the fit method for estimator
@@ -173,26 +173,35 @@ lazy learning - memorizes the training data rather than learning a discriminant 
   - solutions - goal obtain a lessbiased estimate of ability to generalize to new data
     - hold-out cross=validation - separate data into 3 parts train/validate/test - performance on validation data is used for model selection (pg 137)
       - con: perfomrance estimate may be ssensitive to how data is partitioned - estimate will vary for different data examples
-    - k-fold cross-validation
+    - k-fold cross-validation (p 137)
+      - randomly split the training data into k-folds without replacement - k-1 folds used for training - last fold for validation
+      - "average performance of the models based on the different, independent test folds"  (pg 138)
+      - "use k-fold cross-validation for model tuning, that is, finding the optimal hyperparameter values"  (pg 138)
+      - good staring value for k is 10 (p 139)
+      - use large k for small datasets = training in each iteration = lowers bias (but increases runtime)
+      - large datsets use a smaller k (e.g. 5) 
+      - stratified k-fold - to ensure each fold is representative of the class proportion (sklearn.modelSelection)
+        - can yield beter bias and variance estimates
+    -  leave one out cross validation (LOOCV) - set k to number of training samples (one training example per fold - recommended for small datasets (p 139)
+    -  k-fold cross-validation scorer - sklearn.model_selection import cross_val_score - simplifies model evaluation (p 140)
+      - use n_jobs param to use multiple CPUs
+    - other methods: .643 bootstrap, 
 - use validation dataset for model selection
+
+## learning curves and validation curves (p 141)
+  - common fixes
+    - underfitting
+      - increase parameters to the model
+      - decrease degree of regularization (e.g. in SVM or logistic reg classifiers)
+    - overfitting
+     - collect more data
+     - reduce model complexity
+     - increase regularization
+     - decrease features with feature selection
 
 # notes exported from ebook app
 
-- "k-fold cross-validation"  (pg 137)
-- "average performance of the models based on the different, independent test folds"  (pg 138)
-- "Typically, we use k-fold cross-validation for model tuning, that is, finding the optimal hyperparameter values"  (pg 138)
-- "randomly split the training dataset into k folds without replacement"  (pg 138)
-- "obtain a less biased estimate of its ability to generalize to new data"  (pg 138)
-- "performance estimate may be very sensitive to how we partition"  (pg 138)
-- "good standard value for k in k-fold cross-validation is 10,"  (pg 139)
-- "working with relatively small training sets, it can be useful to increase the number of folds"  (pg 139)
-- "with large datasets, we can choose a smaller value for k, for example, k = 5"  (pg 139)
-- "leave-one-out cross-validation (LOOCV) method. In LOOCV, we set the number of folds equal to the number of training examples (k = n) so that only one training example is used for testing during each iteration"  (pg 139)
-- "which is a recommended approach for working with very small datasets"  (pg 139)
-- "stratified k-fold cross-validation, which can yield better bias and variance estimates"  (pg 139)
-- "scikit-learn also implements a k-fold cross-validation scorer"  (pg 140)
-- "sklearn.model_selection import cross_val_score"  (pg 140)
-- "learning curves and validation curves."  (pg 141)
+
 - "collect more training examples to reduce the degree of overfitting"  (pg 141)
 - "setting n_jobs=2, we could distribute the 10 rounds of cross-validation to two CPUs"  (pg 141)
 - "alternative cross-validation techniques, such as the .632 Bootstrap cross-validation method"  (pg 141)

@@ -1,5 +1,5 @@
-# Python Machine Learning by Sebastian 
-by Raschka and Vahid Mirjalili 
+# Python Machine Learning 
+by Sebastian Raschka and Vahid Mirjalili 
 2019 Packt
 
 notes from the book 
@@ -253,61 +253,59 @@ lazy learning - memorizes the training data rather than learning a discriminant 
   - macro-averaging(default) - average of scores for different systems - sum of all precision metrics divided by the number of systems - useful if there might be a class imbalance
   - micro-averaging  - sum of TP for all systems divided by the sum all TP + sum of all FP for all systems - useful if you want to weight each instance/prediction equally (instance weight more than class weight)
   - specified to am make_socrer using the 'average' param
-  - class imbalance - can get high accuracy just by pridcition the majority class - so accuracy based models are not adding value
+  - class imbalance - can get high accuracy just by pridcition the majority class - so accuracy based models are not adding value (i.e. don't use accuracy)
+  - "assign a larger penalty to wrong predictions on the minority class." using class_weight='balanced' parameter  (pg 154)
+  - ressample minority class - draw new samoles from training dataset with replacement
+    - "sklearn.utils import resample"  (pg 154)
+  - downsample the majority class (resample function can do this also)
+  - Synthetic Minority Over-sampling Technique (SMOTE) generate sythetic data (not covered) (p 155)
+
+## Ensemble models (p 156)
+- majority voting - function for this defined on p 159 - sklearn v > 0.17 have it sklearn.ensemble.VotingClassifier
+  - technically 'majority' refers to two classes; plurality voting is the correct terminology for 3+ classes (most still call it majority)
+  - mode function used to determine most common class among participant models'
+  - proof for inherent improvement (reduction in error) with ensemble performance (p 157)
+    - binomical coefficient 9 above 2 in parens latex is 9 \choose 2
+  - can use class probabilities from each model for majority voting instead of just the final class estimate - but requires classifiers to be well-calibrated (p 159)
+    - "weighted majority vote based on class probabilities, we can again make use of NumPy, using np.average and np.argmax:"  (pg 159)
+    - "np.argmax(np.bincount([0, 0, 1],...           weights=[0.2, 0.2, 0.6]))"; *weighted majority vote with argmax*  (pg 159)
+    - "decision tree probabilities are calculated from a frequency vector"  (pg 162)
+    - "k-nearest neighbors are aggregated to return the normalized class label frequencies in"  (pg 163)
+- ensemble_error function - defined on (p 157)
+- stacking - ensemble of classifiers in first layer feed their predictions to another level (typically Logistic regression) to produce a final prediction
+- bagging - "draw bootstrap samples (random samples with replacement) from the initial training dataset, which is why bagging is also known as bootstrap aggregating.";   (pg 168)
+  - "from sklearn.ensemble import BaggingClassifier"  (pg 170)
+  - "each sample used to fit a classifier, C_j, which is most typically an unpruned decision tree:"  (pg 169)
+    - "random forests are a special case of bagging where we also use random feature subsets when fitting the individual decision trees"  (pg 169)
+  - predictions combined using majority voting
+  - "bagging can improve the accuracy of unstable models and decrease the degree of overfitting"  (pg 169)
+  - ineffective at reducing model bias - so ensemble of mdodels should be clasifiers with low bias(p 172)
+- boosting - use weaklearners to make improvements on poorly classified isntances - "focus on training examples that are hard to classify, that is, to let the weak learners subsequently learn from misclassified training examples"  (pg 172)
+  - "boosting algorithm uses random subsets of training examples drawn from the training dataset **without replacement**;"  (pg 172)
+  - some sources indicate that ... "boosting can lead to a decrease in bias as well as variance compared to bagging models. In practice, however, boosting algorithms such as AdaBoost are also known for their high variance, that is, the tendency to overfit the training data"  (pg 173)
+  - AdaBoost - uses the complete training dataset (p 173)
+    - "training examples are reweighted in each iteration" 
+    - "assign a larger weight to the two previously misclassified examples (circles). Furthermore, we lower the weight of the correctly classified examples"  (pg 173)
+    - "initialize the weights uniformly"; *to. sum to 1*  (pg 174)
+    - after updates... "normalize the weights so that they sum up to 1"; *normalize to sum to 1 again after updates*  (pg 174)
+    - sklearn.ensemble import AdaBosstClassifier
+    - "need to think carefully about whether we want to pay the price of increased computational costs for an often relatively modest improvement in predictive performance"  (pg 176)
+  - gradient boosting
+    - xgboost is based on original algorithm - computationally efficient
+    - sklearn has GradientBoostClassifier and a faster vesrion in >0-.21 called HistGradientBoostingClassifier
+  - adaptive boosting - weights are updated in a differnt fashoion (p 177)
+- implementation of MajorityVoteClassifier  (pg 177)
+
+## sentiment analysis (p 178)
+also called 'opinion mining
+
+## out of place notes and errata
 *** NOTE that mlxtend has a plot_decision_regions function already defined that works like the one in this book ***
+- "get_params method to get a basic idea of how we can access the individual parameters inside a GridSearchCV"  (pg 166) **move this up**
+- "bad practice to use the test dataset more than once for model evaluation"  (pg 168) **move this up**
+---
 
-# notes exported from ebook app
 
-- "when we fit classifiers on such datasets, it would make sense to focus on other metrics than accuracy"; *can get 90% accuracy just by predicting majority class; models below that accuracy are not adding anything*  (pg 153)
- 
-- "assign a larger penalty to wrong predictions on the minority class."  (pg 154)
-- "sklearn.utils import resample"  (pg 154)
-- "resample function that can help with the upsampling of the minority class by drawing new samples from the dataset with replacement."  (pg 154)
-- "Synthetic Minority Over-sampling Technique (SMOTE"  (pg 155)
-- "could downsample the majority class"  (pg 155)
-- "ensemble can be built from different classification algorithms,"  (pg 156)
-- "generalize the majority voting principle to multiclass settings, which is called plurality voting"  (pg 156)
-- "error rate of the ensemble (0.034) is much lower than the error rate of each individual classifier (0.25)"  (pg 157)
-- "￼ is the binomial coefficient n choose k."  (pg 157)
-- "ensemble_error"; *they will probably reuse this later*  (pg 157)
-- ""majority voting" will be used for simplicity, as is often the case in the literature."  (pg 158)
-- "Using the predicted class probabilities instead of the class labels for majority voting can be useful if the classifiers in our ensemble are well calibrated"  (pg 159)
-- "weighted majority vote based on class probabilities, we can again make use of NumPy, using np.average and np.argmax:"  (pg 159)
-- "np.argmax(np.bincount([0, 0, 1],...           weights=[0.2, 0.2, 0.6]))"; *weighted majority vote with argmax*  (pg 159)
-- "sklearn.ensemble.VotingClassifier in scikit-learn version 0.17 and newer"  (pg 162)
-- "decision trees, the probabilities are calculated from a frequency vector"  (pg 162)
-- "k-nearest neighbors are aggregated to return the normalized class label frequencies in"  (pg 163)
-- "get_params method to get a basic idea of how we can access the individual parameters inside a GridSearchCV"  (pg 166)
-- "bad practice to use the test dataset more than once for model evaluation"  (pg 168)
-- "stacking algorithm can be understood as a two-level ensemble, where the first level consists of individual classifiers that feed their predictions to the second level, where another classifier (typically logistic regression) is fit to the level-one classifier predictions to make the final predictions"  (pg 168)
-- "draw bootstrap samples (random samples with replacement) from the initial training dataset, which is why bagging is also known as bootstrap aggregating."; *bagging*  (pg 168)
-- "classifier, ￼, which is most typically an unpruned decision tree:"  (pg 169)
-- "bagging can improve the accuracy of unstable models and decrease the degree of overfitting"  (pg 169)
-- "random forests are a special case of bagging where we also use random feature subsets when fitting the individual decision trees"  (pg 169)
-- "predictions are combined using majority voting"  (pg 169)
-- "from sklearn.ensemble import BaggingClassifier"  (pg 170)
-- "bagging is ineffective in reducing model bias"  (pg 172)
-- "boosting is to focus on training examples that are hard to classify, that is, to let the weak learners subsequently learn from misclassified training examples"  (pg 172)
-- "boosting algorithm uses random subsets of training examples drawn from the training dataset without replacement;"  (pg 172)
-- "boosting, the ensemble consists of very simple base classifiers, also often referred to as weak learners"  (pg 172)
-- "want to perform bagging on an ensemble of classifiers with low bias"  (pg 172)
-- "AdaBoost uses the complete training dataset"  (pg 173)
-- "training examples are reweighted in each iteration"  (pg 173)
-- "assign a larger weight to the two previously misclassified examples (circles). Furthermore, we lower the weight of the correctly classified examples"  (pg 173)
-- "tendency to overfit the training"  (pg 173)
-- "boosting can lead to a decrease in bias as well as variance compared to bagging models. In practice, however, boosting algorithms such as AdaBoost are also known for their high variance, that is, the tendency to overfit the training data"  (pg 173)
-- "normalize the weights so that they sum up to 1"; *normalize to sum to 1 again after updates*  (pg 174)
-- "initialize the weights uniformly"; *to. sum to 1*  (pg 174)
-- "practice to select a model based on the repeated usage of the test dataset"  (pg 175)
-- "introduced additional variance by our attempt to reduce the model bias"  (pg 175)
-- "AdaBoostClassifier"  (pg 175)
-- "need to think carefully about whether we want to pay the price of increased computational costs for an often relatively modest improvement in predictive performance"  (pg 176)
-- "adaptive and gradient boosting, differ mainly with regard to how the weights are updated and how the (weak) classifiers are combined."  (pg 177)
-- "XGBoost, which is essentially a computationally efficient implementation of the original gradient boost algorithm"  (pg 177)
-- "gradient boosting"  (pg 177)
-- "implemented MajorityVoteClassifier"  (pg 177)
-- "GradientBoostingClassifier implementation in scikit-learn, scikit-learn now also includes a substantially faster version of gradient boosting in version 0.21, HistGradientBoostingClassifier"  (pg 177)
-- "sentiment analysis, sometimes also called opinion mining"  (pg 178)
 - "stemming and lemmatization have little impact on the performance of text classification"  (pg 187)
 - "lemmatization is computationally more difficult and expensive compared to stemming and"  (pg 187)
 - "of-core learning, which allows us to work with such large datasets by fitting the classifier incrementally on smaller batches of a dataset.Text"  (pg 191)

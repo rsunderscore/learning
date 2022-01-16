@@ -1,0 +1,353 @@
+# Python Machine Learning 
+by Sebastian Raschka and Vahid Mirjalili 
+2019 Packt
+
+notes from the book 
+
+- convention - underscore after a attribute indicates that it is not created at init time (p 39)
+- normalization procedcure helps gradient descent learning to covnergae more quickly (p 50)
+- standardization helps with gradient descent learning b/c optimizer has to go through fewer steps (p 51)
+- SSE may be non-zero even though all examples are classified - i.e. the model may report some amount of error even with 100% classification (p 51)
+- stochastic part of SGD == weights are updated incrementally with each training example (p 52)
+- error surface is noisier than in gradient descent
+- shuffle the training dataset for every epoch
+- adaptive learning rate with SGD rather than fixed learning rate
+- online learning == model is trained on the fly as new data arrives
+- partial_fit - method which does not reinitialize the weights for online learning
+- train_test_split automatically shuffles the data
+- startification - training and test subsets containing the same proportions of class labels (supervised)
+- plot_decision_regions (algorithm by book authors on p60
+- np.ravel (flatten a iter of iters) (p 54)
+- OvR = One vs Rest - 
+- **all allgorithms require informitive and discrimative features to yield useful predictions**
+
+## logistic regression: easy to implement and performs well on linearly separable classes
+  - logit function == logarithm of odds
+  - log is used to refer to ln (natural log) thorughout the book :question:
+  - uppercase pi symobl is like summation but multiplies over the specified range
+  - log reduces the potential for numerical underflow - which can happen if the likelihoods are small
+  - sklearn.linear_model.logisticRegression
+  - solver paramter allows for different optimization algorithms: newton-cg, lbfgs(default in sklearn 0.22), lib-linear (default in sklearn < 0.22), sag, saga
+  - np.argmax to get the largest column in each row - use for the labels
+  - for predict sklearn expects a 2d matrix so must convert single row for input using reshape(1,-1)
+  - goal is to maximize the conditional likelihoods which may increase outlier impact
+- bias variance trade-off
+  - high bias == underfitting == error (distance of predictions from actuals) - model is too simple to capture the underlying patterns
+  - high variance == overfitting == consistency - works well on train but not on test
+    - too many parameters?
+  - regularization penalizes extreme paramater weights (lowers bias)
+    - L1 regularization - (y2-y1) + (x2-x1)
+    - L2 regularization == shrinkage == weight decay - distance formula - sqrt((y2-y1)^2+(x2-x1)^2)
+    - requires all features to have comparable scale
+    - lambda is regularization parameter sometimes specified as its inverse 'C'
+
+## SVM = support vector machine
+  - maximize the margin - the distance the decision boundary and data points
+  - support vectors are the data points that are closest to the hyperplane boundary (they drive its location)
+  - small margins can indicate overfitting
+  - quadratic programming - what is this :question:
+  - slack variable \gamma lowercase gamma -used for soft-margin classification - handles cases when data is not perfectly linearly separable
+    - set C to control misclassification penalty
+  - less prone to outliers than logistic regression
+  - liblinear/libsvm == optimized library for solving logistic/SVM problems - work well if all data fits in memory - otherwise use SGDClassifer implementations
+- kernel SVM = for nonlinear problems
+  - kernel trick - protect the data into a higher dimensional space where it will be linearly separable
+  - kernel is a  similarity function between a pair of examples
+  - uses a mapping function represented by \phi lowercase phi
+  - RBF (radial bias function) == Gaussian kernel - a widely used kernel 
+  - cut-off paramater \gamma lowercase gamma - for gaussian sphere - higher menas bumpier decision boundary to better capture training but may lead to overfitting
+
+## Decision Trees - 
+explainable - help with dim reduction - no need to regularize inputs
+- split based on the largest information gain
+- prune == set maximum depth of the tree
+- binary trees - to reduce the decision search space
+- information gain - reduction in entropy from transforming a dataset - compare entropy before/after the change
+  - mutual information - statistical dependence between two variables - name for information gain applied to a variable selection
+- impurity measures - usually pruning cutoffs are more helpful (gini is usually roughly equivalent to entropy (scaled?))
+  - gini impurity - minimize the probability of missclassification - usually falls between entropy and classification error
+  - entropy - maximize mutual information ()
+  - classification error - useful for pruning only (not growing) - less sensitive 
+  - visualize with `sklearn.tree.plot_tree(model_name)`
+  - graphviz has prettier tree visualizations but has many dependencies: better layout, colors 
+    - outfile=None to bypass disk and save data to a variable instead
+  - PydDotPlus - similar to graphviz and can convert \*.dot files to an image
+  - graphviz has useful visualizations for decision trees
+
+
+## Random forest
+large number of small trees, based on random samples from input data
+- random sample of data (with replacement)
+- random subset of features chosen (without replacement) for each tree
+- less interpretable than decision trees but less dependent on hyperparamter tuning
+- bias variance tradeoff is controlled by the sample size
+- d = number of features to consider at  each split = good starting point is sqrt(m) where m is the number of features in the training dataset
+- 
+
+## K-neaest neighbors
+lazy learning - memorizes the training data rather than learning a discriminant function - very susceptible to overfitting
+- parametrics models = estimate parameters from training data, can discard training data e.g. peceptron, logistic regression, SVM
+- non-parametric models = number of parameters grows with training data, training data retained e.g. decision tree, kernel SVM
+  -  instance based learning - subset of non-parametric - memorize training data (lazy)
+-  for each new datapoint assign the new class by finding the k nearest points and the majority class is chosen for the new point
+-  immediately adapts as new data is collected
+-  right choice for _k_ is crucial for bias variance trade-off
+-  
+
+## data preprocessing
+- find missing - fill(fillna) or remove(dropna) or Impute
+  - sklearn.impute.SimpleImputer - mean imputation - mean of entire column - 
+    - transformer class (fit and transform methods): run fit on train X data features (no y targets) - run transform on both train and test features (and prod)
+- numpy vs pandas - sklearn has some support for DataFrames
+  - sklearn support for np arrays is more mature - use when possible
+- categorical data
+  - ordinal - inherent order to the labels (e.g. Small Medium Large) - assign numbers based on index or mapping dictionary
+    - sklearn.preprocessing.LabelEncoder later can use inverese_transform method to get labels back
+  - nominal - no inherent order (e.g. red, blue, green) - require encoding
+    - create columns from the values and code with 0/1
+    - 1 column is typically removed as it is inherent from other selections and can cause multi-collinearity of the features
+      - multi-collinearity causes matrices to be computationally difficult to invert
+    - one-hot encoding - new dummy feature for each unique value in the nominal column 
+      - sklearn.preprocessing.One-HotEncoder or sklearn.compose.ColumnTranformer to process mutliple columns at once
+      - or pandas get_dummies method - drop_first = True to drop one of the categories
+- splitting data - sklearn.model_selection.train_test_split()
+  - stratify (see above)
+  - common ratios train:test - 60/40 or 70/30 for small datasets - for large datasets it is common to have 90:10 or 99:1
+  - common to re-train on whole dataset prior to deployment
+- **feature scaling**
+  - normalization - rescale features to range 0-1 (special case of min-max scaling) - sklearn.preprocesing.MinMaxScaler
+  - standardization - alter the values to have unit variance and 0 mean - (subtract mean and divide by stddev) |x| might be larger than 1 - sklearn.preprocessing.StandardScaler
+  - Robust scaling - scaled data according the 1st and 3rd quartiles (i.e. IQR) - sklearn.preprocessing.RobustScaler - recommended for small datasets with many outliers
+- **Feature selection**
+  - impose a penalty for models with large numbers of features
+  - logistic reg with L1 regularization inherently causes weights to go to zero for less signficiant features - minimize model cost function and complexity penalty together
+    - lbfgs does not support L1-regularized
+    - get feature weights from lr.coef_
+  - logistic reg with L2 regularization also causes reduction in weights but not as sparse
+    - C is the inverse of the regularization parameter \lambda lambda
+  - sequential feature selection
+    - sequential backward selection - not implemented in sklearn but reasonably easy to code from scratch
+      - Greedy algorithms - locally optimal selections at each stage
+      - exhaustive search algorithms - check all possible combinations - more computation - more accurate
+    - recursive backward elimination - 
+    - tree based methods - feature_importances_ attribute after fitting RandomForestClassifier
+  - if 2 features are highly correlated one may be ranked highly while the other is not fully captured
+  - sklearn SelectFromModel selects features based on a user threshold (e.g. given a RandomForest and a threshold it will return features)
+
+## Dimensionality reduction
+- PCA - principal component analysis - unsupervised method - orthogonal vectors of maximum variance for a desired feature count
+  - highly sensitive to data scaling
+  - eigenvalues and eigenvectors based on covariance matrix of principal comopnents
+    - np.linalg.eig (eigh avoids complex results that may come up with eig)
+    - eigenvectors are typically scaled to unit length
+  - total vs explained variance - bar chart of variance explained for each component and a cumsum total plotted as a line
+  - signs for eigenvector matrix may be flipped depending on the LAPACK implementation on current system (does not effect the model) - mutliply by -1 to fix
+  - sklearn.decompisition.PCA
+    - setting n_components_ = None will return all components in sorted order instead of doing the dimensionality reduction
+- LDA - Linear Discriminant analysis - supervised - find feature subspace the optimizes class seperability
+  - assumes normally distributed data and that classes have identical covariance matrices
+  - class labels taken into account in the form of mean vectors -computed for each class used for within-class and between-class scatter matrices
+  - computing scatter matrix is the same as computing covariance matrix  (covariance matrix is normalized version)
+  - instead of performing eigen decompoisition on the covariance matrix the eigenvalue problem is solved directly
+- KPCA - kernel PCA
+  -  use kernel function to map data into higher dimensional space that is linearly seperable - computationally expensive
+  - results are projected onto the feature space directly without a transformation matrix
+  - need to center the kernel matrix to guarantee that the feature space is centered at zero
+  - most comon kernels
+    - polynomial kernel
+    - readial basis function (RBF) == Gaussian (see above)
+  - not implemented in sklearn :question:
+    - book solution uses scipy.spatial.distance.pdist and squareform; sciopy.exp; and scipy.linalg.eigh
+  - must experiment to find the right value of gamma \gamma
+  - creating datasets for testing
+    - sklearn.datasets.make_moons
+    - sklearn.datasets.make_circles
+    - hyperbolic tangent == sigmoid kernel
+  - from sklearn.dcomposition import KernelPCA (pg 133)\
+  
+## Model evaluation - fine tuning models and evalutating performance (pg 134)
+- Pipeline class 'fit a model including an abitrary number of transformation steps ... and make predictions' (pg 134)
+  - make_pipeline - supplied with arbitrary list of transformers (support fit/transmform methods) followed by an estimator that (implements fit/predict) (pg 136)
+  - calling fit on the pipeline calls all the transformers followed by the fit method for estimator
+  - calling predict on pipeline performs the same transformations but final step is predict method of estimator (pg 136)
+  - no limit to # of intermediate steps
+- using same test dataset repeatedly essentially makes it part of the model and leads to overfitting
+  - solutions - goal obtain a lessbiased estimate of ability to generalize to new data
+    - hold-out cross=validation - separate data into 3 parts train/validate/test - performance on validation data is used for model selection (pg 137)
+      - con: perfomrance estimate may be ssensitive to how data is partitioned - estimate will vary for different data examples
+    - k-fold cross-validation (p 137)
+      - randomly split the training data into k-folds without replacement - k-1 folds used for training - last fold for validation
+      - "average performance of the models based on the different, independent test folds"  (pg 138)
+      - "use k-fold cross-validation for model tuning, that is, finding the optimal hyperparameter values"  (pg 138)
+      - good staring value for k is 10 (p 139)
+      - use large k for small datasets = training in each iteration = lowers bias (but increases runtime)
+      - large datsets use a smaller k (e.g. 5) 
+      - stratified k-fold - to ensure each fold is representative of the class proportion (sklearn.modelSelection)
+        - can yield beter bias and variance estimates
+    -  leave one out cross validation (LOOCV) - set k to number of training samples (one training example per fold - recommended for small datasets (p 139)
+    -  k-fold cross-validation scorer - sklearn.model_selection import cross_val_score - simplifies model evaluation (p 140)
+      - use n_jobs param to use multiple CPUs
+    - other methods: .643 bootstrap (p 141)
+- use validation dataset for model selection
+
+## learning curves and validation curves (p 141)
+![image](https://user-images.githubusercontent.com/51385580/148666088-f6d48866-6383-41a0-90a1-baeea5fb9423.png)
+  - common fixes
+    - underfitting
+      - increase parameters to the model
+      - decrease degree of regularization (e.g. in SVM or logistic reg classifiers)
+    - overfitting
+      - collect more data
+      - reduce model complexity
+      - increase regularization
+      - decrease features with feature selection
+    - learning curve - uses stratified k-fold cross-validation to calculate the cross-validation accuracy of a classifier -  - `sklearn.model_selection import learning_curve`
+      - cv param sets the number of folds (p 143)
+      - ![image](https://user-images.githubusercontent.com/51385580/148666103-880070be-3d70-4695-9b8d-9e22264f1c7c.png)
+      - pass a model or pipeline to the function to use for the validation
+      - access parameters within the pipeline by referencing the name returend by model.get_params (need to check this) e.g. `logisticregression__C'
+      - plot accuracy vs # training examples
+    - validation curve  - uses stratified k-fold cross-validation by default to estimate the performance - `sklearn.model_selection import validation_curve` - (p 144) 
+      -  plot of accuracy vs regularization parameter (C)
+      -  ![image](https://user-images.githubusercontent.com/51385580/148666113-16e33148-d35d-4bbd-9ab0-f92a9d13f6c1.png)
+
+## hyper-parameter tuning
+- Grid Search - helps to improve performance by finding the optimal combination of hyperparamaters (p 145)
+  - from sklearn.model_selection import GridSearchCV
+    - pass a param_grid: list of dicts with param names and potential values to search (or single value to use)
+    - "best_score_ attribute provides the accuracy score achieved (pg 146)
+    -  best_params_ attribute provides the params used to attain the best score
+    -  best_estimator_ among models which one had the best accuracy (using independent test datset)
+    -  uses burte-force exhaustive search
+    -  refit param - automatically refit whole training set to the best_estimator with best_params
+-  Randomized search - usuall performs almost as well but is much more cost and time effective (p 146)
+  -  RandomizedSearchCV
+-  nested cross-validation - select among different machine learning algorithms ( p 147)
+  -  outer k-fold cross-validation loop to split the data into training and test folds 
+  -  inner loop is used to select the model using k-fold cross-validation on the training fold 
+  -  5x2 for large datasets it is usueful to set CV=5 for outer loop and 2 for inner loop
+  -  ![image](https://user-images.githubusercontent.com/51385580/148666513-e7558e5a-ceb5-47e4-a2bc-08d74dc1e7eb.png)
+  -  cross_val_score function (where does this come from?)
+-  other metrics for model perfomance - all in sklearn.metrics -  precision, recall, and the F1 score (p 148)
+  - calculated from confusion matrix - sklearn.metrics import confusion_matrix (p148)
+    -  visualize with matplotlibs mathshow
+    -  predicted across top actuals vertical on the side row major labels are: TP, FN, FP, TN
+    - "error can be understood as the sum of all false predictions divided by the number of total predictions, and the accuracy is calculated as the sum of correct predictions divided by the total number of predictions,"  (p 149) (FP+FN) / (FP+FN+TP+TN)
+    - accuracy = (TP+TN)/(FP+FN+TP+TN) = 1-error
+    - recall = TPR = TP/P = TP/(FN+TP) (p 149) minimizes the chance of missing something (FP are ok) (sklearn.metrics.recall_score)
+    - useful for imbalanced class problems
+      - FPR (false positive rate)= FP/N = FP/(FP+TN)
+      - TPR (true positive rate) =  (same thing as recall) 
+    - precision - emphasizes correctness i.e. minimizes the change of false positives = TP/(TP+FP (sklearn.metrics.precision_score)
+    - F1 score - combines precision and recall  = 2* (PRExREC)/(PRE+REC) (sklearn.metrics.f1_score)
+    - use one of these in GridSearchCV by passing to the `scoring` param
+      - construct custom with skelarn.metrics.make_scorer (e.g. scorer = make_scorer(f1_score)
+  - ROC (receiver operating characteristic) compares FPR and TPR to determine model performance - (p 150)
+    - chart diagonal represents random guess performance
+    - AUC (area under curve) is a numeric value for ROC curve to compare performance
+      - interpolated teh average ROC curve from the multiple fuolds using scipy interp function (p 152)
+      - obtain directly using `sklearn.metrics.roc_auc_score`
+      - precision-recall curves - different probability thresholds
+- multi-class classification scoring
+  - "scikit-learn also implements macro and micro averaging methods to extend those scoring metrics to multiclass problems via one-vs.-all (OvA)"  (pg 152)
+  - macro-averaging(default) - average of scores for different systems - sum of all precision metrics divided by the number of systems - useful if there might be a class imbalance
+  - micro-averaging  - sum of TP for all systems divided by the sum all TP + sum of all FP for all systems - useful if you want to weight each instance/prediction equally (instance weight more than class weight)
+  - specified to am make_socrer using the 'average' param
+  - class imbalance - can get high accuracy just by pridcition the majority class - so accuracy based models are not adding value (i.e. don't use accuracy)
+  - "assign a larger penalty to wrong predictions on the minority class." using class_weight='balanced' parameter  (pg 154)
+  - ressample minority class - draw new samoles from training dataset with replacement
+    - "sklearn.utils import resample"  (pg 154)
+  - downsample the majority class (resample function can do this also)
+  - Synthetic Minority Over-sampling Technique (SMOTE) generate sythetic data (not covered) (p 155)
+
+## Ensemble models (p 156)
+- majority voting - function for this defined on p 159 - sklearn v > 0.17 have it sklearn.ensemble.VotingClassifier
+  - technically 'majority' refers to two classes; plurality voting is the correct terminology for 3+ classes (most still call it majority)
+  - mode function used to determine most common class among participant models'
+  - proof for inherent improvement (reduction in error) with ensemble performance (p 157)
+    - binomical coefficient 9 above 2 in parens latex is 9 \choose 2
+  - can use class probabilities from each model for majority voting instead of just the final class estimate - but requires classifiers to be well-calibrated (p 159)
+    - "weighted majority vote based on class probabilities, we can again make use of NumPy, using np.average and np.argmax:"  (pg 159)
+    - "np.argmax(np.bincount([0, 0, 1],...           weights=[0.2, 0.2, 0.6]))"; *weighted majority vote with argmax*  (pg 159)
+    - "decision tree probabilities are calculated from a frequency vector"  (pg 162)
+    - "k-nearest neighbors are aggregated to return the normalized class label frequencies in"  (pg 163)
+- ensemble_error function - defined on (p 157)
+- stacking - ensemble of classifiers in first layer feed their predictions to another level (typically Logistic regression) to produce a final prediction
+- bagging - "draw bootstrap samples (random samples with replacement) from the initial training dataset, which is why bagging is also known as bootstrap aggregating.";   (pg 168)
+  - "from sklearn.ensemble import BaggingClassifier"  (pg 170)
+  - "each sample used to fit a classifier, C_j, which is most typically an unpruned decision tree:"  (pg 169)
+    - "random forests are a special case of bagging where we also use random feature subsets when fitting the individual decision trees"  (pg 169)
+  - predictions combined using majority voting
+  - "bagging can improve the accuracy of unstable models and decrease the degree of overfitting"  (pg 169)
+  - ineffective at reducing model bias - so ensemble of mdodels should be clasifiers with low bias(p 172)
+- boosting - use weaklearners to make improvements on poorly classified isntances - "focus on training examples that are hard to classify, that is, to let the weak learners subsequently learn from misclassified training examples"  (pg 172)
+  - "boosting algorithm uses random subsets of training examples drawn from the training dataset **without replacement**;"  (pg 172)
+  - some sources indicate that ... "boosting can lead to a decrease in bias as well as variance compared to bagging models. In practice, however, boosting algorithms such as AdaBoost are also known for their high variance, that is, the tendency to overfit the training data"  (pg 173)
+  - AdaBoost - uses the complete training dataset (p 173)
+    - "training examples are reweighted in each iteration" 
+    - "assign a larger weight to the two previously misclassified examples (circles). Furthermore, we lower the weight of the correctly classified examples"  (pg 173)
+    - "initialize the weights uniformly"; *to. sum to 1*  (pg 174)
+    - after updates... "normalize the weights so that they sum up to 1"; *normalize to sum to 1 again after updates*  (pg 174)
+    - sklearn.ensemble import AdaBosstClassifier
+    - "need to think carefully about whether we want to pay the price of increased computational costs for an often relatively modest improvement in predictive performance"  (pg 176)
+  - gradient boosting
+    - xgboost is based on original algorithm - computationally efficient
+    - sklearn has GradientBoostClassifier and a faster vesrion in >0-.21 called HistGradientBoostingClassifier
+  - adaptive boosting - weights are updated in a differnt fashoion (p 177)
+- implementation of MajorityVoteClassifier  (pg 177)
+
+## sentiment analysis (p 178)
+also called 'opinion mining
+- bag of words - based on word counts in each document from CountVectorizer
+  - sklearn.feature_extraction.text import CountVectorizer
+    - vacabulary_ attribute has all the words and their indices (usually assigned alphabetically)
+    - also called term frequencies
+  - n-grams - grab words together to capture context
+    - e.g. n-grams of size 3-4 give good perfomance in SPAM filters
+    - CountVectorizer has ngram_range parameter to handle
+- tf-idf - term frequency inverse document frequency 
+  - zero in denominator of calc so that words that are not in any document get a non-zero value (avoid division by zero?)
+  - skelarn.feature_extraction.text import TfidfTransformer (takes CountVectorizer as input)
+    - different computation than textbook - (adds 1 to numerator also) due to smooth_idf=True
+    - class normalizes tfidfs directly using L2-normalization
+  - TfidfVectorizer combbines CountVectorizer with TfidfTransformer (p 189)
+- cleaning
+  - strip unwanted characters e.g. punctuation
+  - using regex to parse HTML is generally not advised
+  - tokenize usnign str.split or NLTK
+    - porter tokenizer
+  - stemming
+    - lemmatization - more computationally difficult - tries to stem to real dictionary word
+    - porter stemmer - oldest/simplest 
+    - lancaster stemmer - notorious for being more aggressive than porter
+    - snowball stemmer (aka Porter2 or English) faster than porter 
+    - "stemming and lemmatization have little impact on the performance of text classification"  (pg 187)- 
+- Logistic regression of tfidf
+  - recommended to use n_jobs to speed up grid search (specifically with regard to tokenization)
+- Naive Bayes (not covered)
+  - good for small datasets
+
+- "**out-of-core learning** which allows us to work with such large datasets by fitting the classifier incrementally on smaller batches of a dataset.Text"  (pg 191)
+  - requires models with a partical_fit function (e.g. SGDClassifier)
+  - right a function to load batches of data from files on disk (e.g. stream_docs function p 191)
+  - use HashingVectorizer to avoid storing all words in memory - uses Hashing trick via 32 bit MurmurHash3 function (Austin Appleby)
+    - choose a large number for  n_features param to avoid collisions
+-word2vec - unsupervised - uses neural network - put words that have similar meanings into similar clusters
+  - allows performaing math with words e.g. king - man + woman = queen
+
+## topic modeling
+---
+## out of place notes and errata
+*** NOTE that mlxtend has a plot_decision_regions function already defined that works like the one in this book ***
+- "get_params method to get a basic idea of how we can access the individual parameters inside a GridSearchCV"  (pg 166) **move this up**
+- "bad practice to use the test dataset more than once for model evaluation"  (pg 168) **move this up**
+- python package pyprind is useful for putting progress bars on various parts of model training (p 179)
+---
+
+- "Latent Dirichlet Allocation (LDA). However, note that while Latent Dirichlet Allocation is often abbreviated as LDA, it is not to be confused with linear discriminant analysis,"  (pg 194)
+- "regression using the RANdom SAmple Consensus (RANSAC) algorithm, which fits a regression model to a subset of the data, the so-called inliers"  (pg 228)
+- "Ridge Regression, least absolute shrinkage and selection operator (LASSO), and elastic Net"  (pg 232)
+- "￼You can find the list of all activation functions available in the Keras API at https://www.tensorflow.org/versions/r2.0/api_docs/python/tf/keras/activations."  (pg 319)
+- "EM distance can be interpreted as the minimal amount of work needed to transform one distribution into the other"  (pg 442)
+- "dynamic programming is about recursive problem solving—"  (pg 454)
+- "difference between recursion and dynamic programming is that dynamic programming stores the results of subproblems"  (pg 454)
